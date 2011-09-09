@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>Comparing Population Density</title>
+
+        <link href="{{ STATIC_URL }}/css/reset.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}/css/text.css" rel="stylesheet">
+        <link href="{{ STATIC_URL }}/css/960.css" rel="stylesheet">
+
+        {% block headstyles %}
+        {% endblock %}
+
+        <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery-1.6.2.min.js"></script>
+
+        {% block headscripts %}
+        {% endblock %}
+    </head>
+
+    <body>
+        <div class="container_12">
+        {% block content %}
+        {% endblock %}
+        </div>
+    <body>
+</html>

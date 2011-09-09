@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block headstyles %}
+<link href="{{ STATIC_URL }}/css/demo_table.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}/css/demo_table_jui.css" rel="stylesheet">
+{% endblock %}
+
+{% block headscripts %}
+<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}/js/openlayers/OpenLayers.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	$('.datatable').dataTable({
+		"bJQueryUI": true
+    });
+
+    var map = new OpenLayers.Map('city-map-chicago');
+    console.debug(map.projection);
+    map.addLayer(new OpenLayers.Layer.OSM());
+    //map.setCenter(new OpenLayers.LonLat(-87.65, 41.85), 5);
+    map.setCenter(new OpenLayers.LonLat(200, 40), 5);
+    //map.zoomToMaxExtent();
+    var geojson = new OpenLayers.Layer.GML("GeoJSON", "/chicago/neighborhoods.json", {
+        //projection: new OpenLayers.Projection("EPSG:4326"),
+        format: OpenLayers.Format.GeoJSON
+    });
+    map.addLayer(geojson); 
+
+} );
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>Comparing Population Densities</h1>
+
+{% for city in city_stats %}
+<h2>{{ city.name }}</h2>
+
+<div id="city-map-{{ city.name|lower }}" class="city-map" style="width:100%; height:100%"></div>
+<table class="datatable">
+    <thead>
+        <tr>
+            <th>Neighborhood</th>
+            <th>Population Density</th>
+            <th>Total Population</th>
+        </tr>
+    <thead>
+    <tfoot>
+        <tr>
+            <td>Median Population Density</td>
+            <td colspan="2">{{ city.median_population_density }}</td>
+        </tr>
+    <tbody>
+    {% for n in city.neighborhoods %}
+        <tr>
+            <td>{{ n.name }}</td>
+            <td>{{ n.population_density }}</td>
+            <td>{{ n.total_population }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+{% endblock %}
