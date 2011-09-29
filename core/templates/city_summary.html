@@ -19,19 +19,22 @@ $(document).ready(function() {
       projection: new OpenLayers.Projection("EPSG:900913")
     });
     map.addLayer(new OpenLayers.Layer.OSM());
-    //console.debug(map.projection);
     map.setCenter(new OpenLayers.LonLat(-87.65, 41.85) // Center of the map
           .transform(
             new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
             new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
-          ), 15 // Zoom level
+          ), 2 // Zoom level
         );
     var geojson = new OpenLayers.Layer.GML("GeoJSON", "/chicago/neighborhoods.json", {
         projection: new OpenLayers.Projection("EPSG:4326"),
         format: OpenLayers.Format.GeoJSON
+    });    
+    geojson.events.on({
+        "loadend": function() {
+            map.zoomToExtent(geojson.getDataExtent());
+        }
     });
     map.addLayer(geojson); 
-
 } );
 </script>
 {% endblock %}
@@ -39,7 +42,6 @@ $(document).ready(function() {
 {% block content %}
 <h1>Comparing Population Densities</h1>
 
-{% for city in city_stats %}
 <h2>{{ city.name }}</h2>
 
 <div id="city-map-{{ city.name|lower }}" class="city-map" style="width:100%; height:100%"></div>
@@ -66,5 +68,4 @@ $(document).ready(function() {
     {% endfor %}
     </tbody>
 </table>
-{% endfor %}
 {% endblock %}
