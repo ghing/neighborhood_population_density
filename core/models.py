@@ -14,6 +14,14 @@ class NeighborhoodManager(models.GeoManager):
         else:
             return (neighborhoods_sorted[len(neighborhoods_sorted) / 2].population_density() + neighborhoods_sorted[(len(neighborhoods_sorted) / 2) + 1].population_density()) / 2
 
+    def min_population_density(self, city):
+        neighborhoods_sorted = sorted(self.filter(city=city), key=lambda neighborhood: neighborhood.population_density())
+        return neighborhoods_sorted[0].population_density()
+
+    def max_population_density(self, city):
+        neighborhoods_sorted = sorted(self.filter(city=city), key=lambda neighborhood: neighborhood.population_density())
+        return neighborhoods_sorted[-1].population_density()
+
     def cities(self):
         cities = []
         for city_dict in self.values('city').distinct():
