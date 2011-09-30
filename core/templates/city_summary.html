@@ -9,6 +9,29 @@
 <script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}/js/openlayers/OpenLayers.js"></script>
 <script type="text/javascript">
+var MAX_POPULATION_DENSITY = {{ city.max_population_density }};
+var MIN_POPULATION_DENSITY = {{ city.min_population_density }};
+
+function makeSegments(min, max, numSegments) {
+    var segmentSize = (max - min) / numSegments;
+    // BOOKMARK
+}
+
+function populationDensityStyle() {
+    var style = new OpenLayers.Style();
+
+    var ruleLow = new OpenLayers.Rule({
+        filter: new OpenLayers.Filter.Comparison({
+            type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+            property: "population_density",
+            value: MIN_POPULATION_DENSITY 
+        }),
+        symbolizer: {fillColor: "green", fillOpacity: 0.7, strokeColor: "black"}
+    });
+
+    style.addRules([ruleLow]);
+    return style;
+}
 
 $(document).ready(function() {
 	$('.datatable').dataTable({
@@ -25,9 +48,11 @@ $(document).ready(function() {
             new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
           ), 2 // Zoom level
         );
+    var styleMap = new OpenLayers.StyleMap(populationDensityStyle());
     var geojson = new OpenLayers.Layer.GML("GeoJSON", "/chicago/neighborhoods.json", {
         projection: new OpenLayers.Projection("EPSG:4326"),
-        format: OpenLayers.Format.GeoJSON
+        format: OpenLayers.Format.GeoJSON,
+        styleMap: styleMap
     });    
     geojson.events.on({
         "loadend": function() {
