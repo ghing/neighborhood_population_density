@@ -1,44 +1,42 @@
 {% extends "base.html" %}
 
 {% block headstyles %}
-<link href="{{ STATIC_URL }}/css/demo_table.css" rel="stylesheet">
-<link href="{{ STATIC_URL }}/css/demo_table_jui.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/demo_table.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/demo_table_jui.css" rel="stylesheet">
 {% endblock %}
 
 {% block headscripts %}
-<script type="text/javascript" src="{{ STATIC_URL }}/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}/js/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/utils.js"></script>
 <script type="text/javascript">
 var MAX_POPULATION_DENSITY = {{ city.max_population_density }};
 var MIN_POPULATION_DENSITY = {{ city.min_population_density }};
 
-function makeSegments(min, max, numSegments) {
-    var segmentSize = (max - min) / numSegments;
-    var segmentMin = min;
-    var segments = Array();
-
-    for (i = 1; i <= numSegments; i++) {
-        var segmentMax = segmentMin + i * segmentSize;
-        segments.push([segmentMin, segmentMax]);
-        segmentMin = segmentMax;
-
-    }
-    // BOOKMARK
-}
-
 function populationDensityStyle() {
     var style = new OpenLayers.Style();
+    var rules = Array();
+    var minOpacity = 0.3;
+    var maxOpacity = 1;
+    var numSegments = 5;
+    var opacityIncrement = (maxOpacity - minOpacity) / numSegments;
+    var opacity = minOpacity;
 
-    var ruleLow = new OpenLayers.Rule({
-        filter: new OpenLayers.Filter.Comparison({
-            type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
-            property: "population_density",
-            value: MIN_POPULATION_DENSITY 
-        }),
-        symbolizer: {fillColor: "green", fillOpacity: 0.7, strokeColor: "black"}
+    $.each(makeSegments(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, numSegments), function(index, segment) {
+        console.debug(segment[0]);
+        var rule = new OpenLayers.Rule({
+            filter: new OpenLayers.Filter.Comparison({
+                type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
+                property: "population_density",
+                value: segment[0] 
+            }),
+            symbolizer: {fillColor: "green", fillOpacity: opacity, strokeColor: "black"}
+        });
+        rules.push(rule);
+        opacity += opacityIncrement;
     });
 
-    style.addRules([ruleLow]);
+    style.addRules(rules);
     return style;
 }
 
