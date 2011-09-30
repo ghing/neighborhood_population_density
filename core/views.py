@@ -37,7 +37,6 @@ def neighborhoods_json(request, city_slug):
 def city_summary(request, city_slug):
     city = Neighborhood.objects.city_slug_to_name(city_slug)
     neighborhoods = sorted(Neighborhood.objects.filter(city=city), key=lambda neighborhood: neighborhood.population_density(), reverse=True)
-    print Neighborhood.objects.min_population_density(city=city);
     city_data = {
         'name': city,
         'neighborhoods': neighborhoods,
