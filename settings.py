@@ -1,4 +1,5 @@
 # Django settings for neighborhood_population_density project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -124,6 +125,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     # GeoDjango stuff
     'django.contrib.gis',
+    'django_qunit',
     'core'
 )
 
@@ -157,3 +159,7 @@ LOGGING = {
         } 
     }
 }
+
+BASE_PATH = os.path.dirname(__file__) 
+
+QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests') 

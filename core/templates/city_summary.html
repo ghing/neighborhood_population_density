@@ -14,6 +14,15 @@ var MIN_POPULATION_DENSITY = {{ city.min_population_density }};
 
 function makeSegments(min, max, numSegments) {
     var segmentSize = (max - min) / numSegments;
+    var segmentMin = min;
+    var segments = Array();
+
+    for (i = 1; i <= numSegments; i++) {
+        var segmentMax = segmentMin + i * segmentSize;
+        segments.push([segmentMin, segmentMax]);
+        segmentMin = segmentMax;
+
+    }
     // BOOKMARK
 }
 
@@ -49,7 +58,7 @@ $(document).ready(function() {
           ), 2 // Zoom level
         );
     var styleMap = new OpenLayers.StyleMap(populationDensityStyle());
-    var geojson = new OpenLayers.Layer.GML("GeoJSON", "/chicago/neighborhoods.json", {
+    var geojson = new OpenLayers.Layer.GML("GeoJSON", "neighborhoods.json", {
         projection: new OpenLayers.Projection("EPSG:4326"),
         format: OpenLayers.Format.GeoJSON,
         styleMap: styleMap
