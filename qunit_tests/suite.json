@@ -1,0 +1,8 @@
+{
+    "name": "Main Test Suite",
+    "extra_urls": [
+      "http://127.0.0.1:8000/static/js/utils.js"
+    ]
+}
+
+
