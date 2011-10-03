@@ -1,0 +1,11 @@
+.city-map {
+    width: 100%;
+    height: 100%;
+}
+
+.city-map-legend {
+}
+
+.city-map-legend ul {
+    list-style-type: none;
+}
