@@ -39,6 +39,7 @@ def city_summary(request, city_slug):
     neighborhoods = sorted(Neighborhood.objects.filter(city=city), key=lambda neighborhood: neighborhood.population_density(), reverse=True)
     city_data = {
         'name': city,
+        'slug': city_slug,
         'neighborhoods': neighborhoods,
         'min_population_density': Neighborhood.objects.min_population_density(city=city),
         'max_population_density': Neighborhood.objects.max_population_density(city=city),
