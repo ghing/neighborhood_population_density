@@ -4,8 +4,31 @@
 }
 
 .city-map-legend {
+    width: 200px;
+
+    position: absolute;
+    right:100px; 
+    bottom:10px; 
+
+    border-style: solid;
+    border-width: medium;
+
+    z-index: 10000;
+
+    background-color: white;
 }
 
 .city-map-legend ul {
     list-style-type: none;
+    margin-bottom: 0;
+}
+
+.city-map-legend ul lh {
+    padding: 0.5em;
+    font-weight: bold;
+}
+
+.city-map-legend ul li {
+    margin-left: 0;
+    padding: 0.5em;
 }

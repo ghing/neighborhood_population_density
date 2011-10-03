@@ -3,6 +3,7 @@
 {% block headstyles %}
 <link href="{{ STATIC_URL }}css/demo_table.css" rel="stylesheet">
 <link href="{{ STATIC_URL }}css/demo_table_jui.css" rel="stylesheet">
+<link href="{{ STATIC_URL }}css/map.css" rel="stylesheet">
 {% endblock %}
 
 {% block headscripts %}
@@ -44,7 +45,10 @@ function populationDensityStyle(minPopulationDensity, maxPopulationDensity, minO
 function populationDensityLegend(minPopulationDensity, maxPopulationDensity, minOpacity, maxOpacity, color, numSegments, containerSelector) {
     var opacityIncrement = (maxOpacity - minOpacity) / numSegments;
     var opacity = minOpacity;
-    $('<ul/>').appendTo(containerSelector);
+    var list = $('<ul/>').appendTo(containerSelector);
+    $('<lh/>', {
+        text: 'Population per square mile'
+    }).appendTo(list);
 
     $.each(makeSegments(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, numSegments), function(index, segment) {
         var min = segment[0];
@@ -99,8 +103,10 @@ $(document).ready(function() {
 
 <h2>{{ city.name }}</h2>
 
-<div id="city-map-{{ city.name|lower }}" class="city-map" style="width:100%; height:100%"></div>
-<div id="city-map-legend-{{ city.name|lower }}" class="city-map-legend"></div>
+<div id="city-map-{{ city.name|lower }}" class="city-map">
+    <div id="city-map-legend-{{ city.name|lower }}" class="city-map-legend"></div>
+</div>
+
 <table class="datatable">
     <thead>
         <tr>
