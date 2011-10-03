@@ -76,6 +76,7 @@ $(document).ready(function() {
                                  feature.geometry.getBounds().getCenterLonLat(),
                                  new OpenLayers.Size(100,100),
                                  "<h2>"+feature.attributes.name + "</h2>" +
+                                 "Population per square mile: " +
                                  feature.attributes.population_density,
                                  null, true, onPopupClose);
         feature.popup = popup;
