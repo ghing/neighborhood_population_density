@@ -63,7 +63,36 @@ function populationDensityLegend(minPopulationDensity, maxPopulationDensity, min
     });
 }
 
+
 $(document).ready(function() {
+    function onPopupClose(evt) {
+        // 'this' is the popup.
+        selectControl.unselect(this.feature);
+    }
+
+    function onFeatureSelect(evt) {
+        feature = evt.feature;
+        popup = new OpenLayers.Popup.FramedCloud("featurePopup",
+                                 feature.geometry.getBounds().getCenterLonLat(),
+                                 new OpenLayers.Size(100,100),
+                                 "<h2>"+feature.attributes.name + "</h2>" +
+                                 feature.attributes.population_density,
+                                 null, true, onPopupClose);
+        feature.popup = popup;
+        popup.feature = feature;
+        map.addPopup(popup);
+    }
+
+    function onFeatureUnselect(evt) {
+        feature = evt.feature;
+        if (feature.popup) {
+            popup.feature = null;
+            map.removePopup(feature.popup);
+            feature.popup.destroy();
+            feature.popup = null;
+        }
+    }
+
 	$('.datatable').dataTable({
 		"bJQueryUI": true
     });
@@ -90,9 +119,14 @@ $(document).ready(function() {
         "loadend": function() {
             map.zoomToExtent(geojson.getDataExtent());
             populationDensityLegend(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, 0.3, 1, fillColor, 5, '#city-map-legend-{{ city.name|lower }}');
-        }
+        },
+        "featureselected": onFeatureSelect,
+        "featureunselected": onFeatureUnselect
     });
     map.addLayer(geojson); 
+    var selectControl = new OpenLayers.Control.SelectFeature(geojson);
+    map.addControl(selectControl);
+    selectControl.activate();
 
 } );
 </script>
