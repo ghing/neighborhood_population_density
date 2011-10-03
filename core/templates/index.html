@@ -19,7 +19,6 @@ $(document).ready(function() {
       projection: new OpenLayers.Projection("EPSG:900913")
     });
     map.addLayer(new OpenLayers.Layer.OSM());
-    //console.debug(map.projection);
     map.setCenter(new OpenLayers.LonLat(-87.65, 41.85) // Center of the map
           .transform(
             new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
