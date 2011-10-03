@@ -9,28 +9,29 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/openlayers/OpenLayers.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/utils.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/simpleinheritance.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/color.js"></script>
 <script type="text/javascript">
 var MAX_POPULATION_DENSITY = {{ city.max_population_density }};
 var MIN_POPULATION_DENSITY = {{ city.min_population_density }};
+var CITY_NAME = "{{ city.name }}";
+var CITY_SLUG = "{{ city.slug }}";
+var fillColor = new Color(0, 128, 0, 1); 
 
-function populationDensityStyle() {
+function populationDensityStyle(minPopulationDensity, maxPopulationDensity, minOpacity, maxOpacity, color, numSegments) {
     var style = new OpenLayers.Style();
     var rules = Array();
-    var minOpacity = 0.3;
-    var maxOpacity = 1;
-    var numSegments = 5;
     var opacityIncrement = (maxOpacity - minOpacity) / numSegments;
     var opacity = minOpacity;
 
     $.each(makeSegments(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, numSegments), function(index, segment) {
-        console.debug(segment[0]);
         var rule = new OpenLayers.Rule({
             filter: new OpenLayers.Filter.Comparison({
                 type: OpenLayers.Filter.Comparison.GREATER_THAN_OR_EQUAL_TO,
                 property: "population_density",
                 value: segment[0] 
             }),
-            symbolizer: {fillColor: "green", fillOpacity: opacity, strokeColor: "black"}
+            symbolizer: {fillColor: color.toRgb(), fillOpacity: opacity, strokeColor: "black"}
         });
         rules.push(rule);
         opacity += opacityIncrement;
@@ -40,12 +41,30 @@ function populationDensityStyle() {
     return style;
 }
 
+function populationDensityLegend(minPopulationDensity, maxPopulationDensity, minOpacity, maxOpacity, color, numSegments, containerSelector) {
+    var opacityIncrement = (maxOpacity - minOpacity) / numSegments;
+    var opacity = minOpacity;
+    $('<ul/>').appendTo(containerSelector);
+
+    $.each(makeSegments(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, numSegments), function(index, segment) {
+        var min = segment[0];
+        var max = segment[1];
+        var item = $('<li/>', {
+            text: min + '-' + max
+        }).appendTo(containerSelector + ' ul');
+        var itemColor = color.clone();
+        itemColor.opacity = opacity;
+        item.css({'background-color': itemColor.toRgba()});
+        opacity += opacityIncrement;
+    });
+}
+
 $(document).ready(function() {
 	$('.datatable').dataTable({
 		"bJQueryUI": true
     });
 
-    var map = new OpenLayers.Map('city-map-chicago', {
+    var map = new OpenLayers.Map('city-map-' + CITY_SLUG, {
       projection: new OpenLayers.Projection("EPSG:900913")
     });
     map.addLayer(new OpenLayers.Layer.OSM());
@@ -55,7 +74,9 @@ $(document).ready(function() {
             new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
           ), 2 // Zoom level
         );
-    var styleMap = new OpenLayers.StyleMap(populationDensityStyle());
+    var styleMap = new OpenLayers.StyleMap(populationDensityStyle(
+        MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY,
+        0.3, 1, fillColor, 5));
     var geojson = new OpenLayers.Layer.GML("GeoJSON", "neighborhoods.json", {
         projection: new OpenLayers.Projection("EPSG:4326"),
         format: OpenLayers.Format.GeoJSON,
@@ -67,6 +88,8 @@ $(document).ready(function() {
         }
     });
     map.addLayer(geojson); 
+
+    populationDensityLegend(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, 0.3, 1, fillColor, 5, '#city-map-legend-{{ city.name|lower }}');
 } );
 </script>
 {% endblock %}
@@ -77,6 +100,7 @@ $(document).ready(function() {
 <h2>{{ city.name }}</h2>
 
 <div id="city-map-{{ city.name|lower }}" class="city-map" style="width:100%; height:100%"></div>
+<div id="city-map-legend-{{ city.name|lower }}" class="city-map-legend"></div>
 <table class="datatable">
     <thead>
         <tr>
