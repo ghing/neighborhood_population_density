@@ -89,11 +89,11 @@ $(document).ready(function() {
     geojson.events.on({
         "loadend": function() {
             map.zoomToExtent(geojson.getDataExtent());
+            populationDensityLegend(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, 0.3, 1, fillColor, 5, '#city-map-legend-{{ city.name|lower }}');
         }
     });
     map.addLayer(geojson); 
 
-    populationDensityLegend(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, 0.3, 1, fillColor, 5, '#city-map-legend-{{ city.name|lower }}');
 } );
 </script>
 {% endblock %}
