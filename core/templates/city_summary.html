@@ -119,7 +119,7 @@ $(document).ready(function() {
     geojson.events.on({
         "loadend": function() {
             map.zoomToExtent(geojson.getDataExtent());
-            populationDensityLegend(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, 0.3, 1, fillColor, 5, '#city-map-legend-{{ city.name|lower }}');
+            populationDensityLegend(MIN_POPULATION_DENSITY, MAX_POPULATION_DENSITY, 0.3, 1, fillColor, 5, '#city-map-legend-{{ city.slug }}');
         },
         "featureselected": onFeatureSelect,
         "featureunselected": onFeatureUnselect
@@ -138,8 +138,8 @@ $(document).ready(function() {
 
 <h2>{{ city.name }}</h2>
 
-<div id="city-map-{{ city.name|lower }}" class="city-map">
-    <div id="city-map-legend-{{ city.name|lower }}" class="city-map-legend"></div>
+<div id="city-map-{{ city.slug }}" class="city-map">
+    <div id="city-map-legend-{{ city.slug }}" class="city-map-legend"></div>
 </div>
 
 <table class="datatable">
