@@ -95,7 +95,11 @@ $(document).ready(function() {
     }
 
 	$('.datatable').dataTable({
-		"bJQueryUI": true
+		"bJQueryUI": true,
+        "sScrollY": "60%",
+        "bPaginate": false,
+        "bFilter": false,
+        "bInfo": false
     });
 
     var map = new OpenLayers.Map('city-map-' + CITY_SLUG, {
@@ -138,31 +142,33 @@ $(document).ready(function() {
 
 <h2>{{ city.name }}</h2>
 
-<div id="city-map-{{ city.slug }}" class="city-map">
+<div id="city-map-{{ city.slug }}" class="city-map grid_8">
     <div id="city-map-legend-{{ city.slug }}" class="city-map-legend"></div>
 </div>
 
-<table class="datatable">
-    <thead>
-        <tr>
-            <th>Neighborhood</th>
-            <th>Population Density</th>
-            <th>Total Population</th>
-        </tr>
-    <thead>
-    <tfoot>
-        <tr>
-            <td>Median Population Density</td>
-            <td colspan="2">{{ city.median_population_density }}</td>
-        </tr>
-    <tbody>
-    {% for n in city.neighborhoods %}
-        <tr>
-            <td>{{ n.name }}</td>
-            <td>{{ n.population_density }}</td>
-            <td>{{ n.total_population }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<div class="grid_4">
+    <table class="datatable">
+        <thead>
+            <tr>
+                <th>Neighborhood</th>
+                <th>Population Density</th>
+                <th>Total Population</th>
+            </tr>
+        <thead>
+        <tfoot>
+            <tr>
+                <td>Median Population Density</td>
+                <td colspan="2">{{ city.median_population_density }}</td>
+            </tr>
+        <tbody>
+        {% for n in city.neighborhoods %}
+            <tr>
+                <td>{{ n.name }}</td>
+                <td>{{ n.population_density }}</td>
+                <td>{{ n.total_population }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
