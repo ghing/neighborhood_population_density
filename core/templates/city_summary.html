@@ -99,7 +99,20 @@ $(document).ready(function() {
         "sScrollY": "60%",
         "bPaginate": false,
         "bFilter": false,
-        "bInfo": false
+        "bInfo": false,
+        "aaSorting": [[1, 'desc']]
+    });
+
+    $('.datatable tr').click(function() {
+        var neighborhood_id;
+        $.each($(this).attr('class').split(' '), function(index, cls) {
+            var match = cls.match(/neighborhood-(\d+)/);
+            if (match != null) { 
+                neighborhood_id = match[1];
+                return;
+            }
+        });
+        // BOOKMARK
     });
 
     var map = new OpenLayers.Map('city-map-' + CITY_SLUG, {
@@ -162,7 +175,7 @@ $(document).ready(function() {
             </tr>
         <tbody>
         {% for n in city.neighborhoods %}
-            <tr>
+            <tr class="neighborhood-{{ n.id }}">
                 <td>{{ n.name }}</td>
                 <td>{{ n.population_density }}</td>
                 <td>{{ n.total_population }}</td>
