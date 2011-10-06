@@ -25,7 +25,7 @@ def index(request):
 def neighborhoods_json(request, city_slug):
     neighborhood_json = []
     for neighborhood in Neighborhood.objects.city_neighborhoods(city_slug):
-        neighborhood_json.append('{ "type": "Feature", "geometry": %s, "properties": { "name": "%s", "population_density": "%s" } }' % (neighborhood.geom.json, neighborhood.name, neighborhood.population_density()))
+        neighborhood_json.append('{ "type": "Feature", "geometry": %s, "properties": { "name": "%s", "population_density": "%s", "id": "%d" } }' % (neighborhood.geom.json, neighborhood.name, neighborhood.population_density(), neighborhood.id))
 
     content = '{ "type": "FeatureCollection", "features": ['
     content += ','.join(neighborhood_json)
